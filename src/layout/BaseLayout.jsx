@@ -1,6 +1,19 @@
 import React from "react";
-import { AppRootContextProvider } from "../utils/AppRootContext";
+import { Layout } from "antd";
 
-export default function BaseLayout() {
-  return <AppRootContextProvider></AppRootContextProvider>;
+const { Header, Content } = Layout;
+
+export default function BaseLayout({ children }) {
+  return (
+    <Layout style={{ height: "100vh" }}>
+      <Header style={{ color: "white", alignItems: "center", textAlign: "center", backgroundColor: "teal" }}>Admin Dashboard</Header>
+      <Content
+        style={{
+          padding: "50px 50px",
+          alignItems: "center",
+        }}>
+        {children}
+      </Content>
+    </Layout>
+  );
 }

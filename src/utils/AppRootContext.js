@@ -2,6 +2,7 @@ import { createContext, useState } from "react";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { AuthAPI } from "./Api";
 
 const AppRootContext = createContext();
 
@@ -9,9 +10,24 @@ const AppRootContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
 
+  const Notification = (text) => {
+    notification.open({
+      message: text,
+    });
+  };
+
+  const createNewUser = async (values) => {
+    try {
+      await AuthAPI.post("/users/register", values);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getUsers = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8000/users/get-user", {
+      const { data } = await axios.get("http://localhost:8000/api/users/get-user", {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -28,35 +44,23 @@ const AppRootContextProvider = ({ children }) => {
     }
   };
 
-  const Notification = (text) => {
-    notification.open({
-      message: text,
-    });
-  };
-
   const loginApi = async (values) => {
-    const response = await fetch("http://localhost:8000/users/login", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-type": "application/json;charset=UTF-8",
-      },
-    });
-    if (response.status === 200) {
-      const data = await response.json();
-      if (data === "User does not exist") {
-        Notification(data);
-      } else if (data === "Password did not matched") {
-        Notification(data);
-      } else {
-        Notification("Logged in ");
-        localStorage.setItem("token", data);
-        console.log(data);
-        navigate("/");
+    try {
+      const response = await AuthAPI.post("/users/login", values);
+      if (response.data === "User not found") {
+        Notification("User not found");
+        return;
       }
+      if (response.data === "Password not matched!!!") {
+        Notification("Password not matched!!!");
+        return;
+      }
+      const token = response.data;
+      localStorage.setItem("token", token);
+      navigate("/");
       return;
-    } else {
-      return await Promise.reject(response);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -67,6 +71,7 @@ const AppRootContextProvider = ({ children }) => {
         getUsers,
         Notification,
         loginApi,
+        createNewUser,
       }}>
       {children}
     </AppRootContext.Provider>

@@ -1,37 +1,39 @@
 import { Button, Card, Checkbox, Divider, Form, Input, Row } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AdminLayout from "../layout/AdminLayout";
+import { AppRootContext } from "../utils/AppRootContext";
 
 export default function Registration() {
+  const { createNewUser } = useContext(AppRootContext);
   const [form] = Form.useForm();
-  const [user, setUser] = useState([]);
-  const navigate = useNavigate();
-  const createNewUser = (values) => {
-    const password = values.password;
-    console.log("Password : " + password);
 
-    fetch("http://localhost:8000/users/register", {
-      method: "POST",
-      body: JSON.stringify({
-        username: values.username,
-        email: values.email,
-        password: values.password,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        console.log("====================================");
-        console.log(json);
-        console.log("====================================");
-        setUser(json);
-      });
-    navigate("/");
-  };
+  const navigate = useNavigate();
+  // const createNewUser = (values) => {
+  //   const password = values.password;
+  //   console.log("Password : " + password);
+
+  //   fetch("http://localhost:8000/users/register", {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       username: values.username,
+  //       email: values.email,
+  //       password: values.password,
+  //     }),
+  //     headers: {
+  //       "Content-type": "application/json; charset=UTF-8",
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((json) => {
+  //       console.log("====================================");
+  //       console.log(json);
+  //       console.log("====================================");
+  //       setUser(json);
+  //     });
+  //   navigate("/");
+  // };
   // console.log(user);
 
   return (
@@ -67,6 +69,10 @@ export default function Registration() {
             label="Email"
             name="email"
             rules={[
+              {
+                type: "email",
+                message: "The input is not valid E-mail!",
+              },
               {
                 required: true,
                 message: "Please input your Email!",

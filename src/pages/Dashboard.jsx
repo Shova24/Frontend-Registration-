@@ -19,11 +19,6 @@ export default function Dashboard() {
       dataIndex: "email",
       key: "email",
     },
-    {
-      title: "Password",
-      dataIndex: "password",
-      key: "email",
-    },
   ];
   return (
     <BaseLayout>

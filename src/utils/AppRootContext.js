@@ -2,7 +2,8 @@ import { createContext, useState } from "react";
 import { notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthAPI } from "./Api";
+import { AuthAPI, CommonAPI } from "./Api";
+import { Notification } from "../Components/Notification";
 
 const AppRootContext = createContext();
 
@@ -10,11 +11,11 @@ const AppRootContextProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
 
-  const Notification = (text) => {
-    notification.open({
-      message: text,
-    });
-  };
+  // const Notification = (text) => {
+  //   notification.open({
+  //     message: text,
+  //   });
+  // };
 
   const createNewUser = async (values) => {
     try {
@@ -27,17 +28,12 @@ const AppRootContextProvider = ({ children }) => {
 
   const getUsers = async () => {
     try {
-      const { data } = await axios.get("http://localhost:8000/api/users/get-user", {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-      });
-      // const users = await response.json();
-      console.log(data);
+      const response = await CommonAPI.get("/users/get-user");
+      console.log(response.data);
       console.log("Token : ", localStorage.getItem("token"));
-      setUser(data);
+      setUser(response.data);
     } catch (error) {
-      // console.log("a", error);
+      console.log("a", error);
       if (error?.response?.data?.message === "Session Expired") {
         navigate("/login");
       }

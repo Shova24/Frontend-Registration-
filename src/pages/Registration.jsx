@@ -101,7 +101,8 @@ export default function Registration() {
                 message: `number`,
               },
               {
-                pattern: /[A-Za-z\d]{8,}/,
+                pattern: /[a-zA-Z0-9!*#$%&?]{4,}/,
+                // pattern: /[A-Za-z\d]{8,}/,
                 message: `Minimum length - 8`,
               },
               // {
@@ -109,11 +110,12 @@ export default function Registration() {
               //   message: `Special charecter`,
               // },
               {
-                pattern: /(?=.*[~!@#$%^&+=]).*/g,
+                pattern: /(?=.*[a-zA-Z >>!#$%&? "<<])[a-zA-Z0-9 >>!#$%&?<< ]/g,
                 message: `Special charecter`,
               },
               // {
               //   pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$/,
+
               //   message: `Password Pattern`,
               // },
             ]}
